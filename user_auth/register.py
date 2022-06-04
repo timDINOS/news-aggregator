@@ -38,6 +38,10 @@ def add_username():
 
 
 def add_password():
+    password_typed1 = flask.request.form['password']
+    retype_password = flask.request.form['retype_password']
+    if password_typed1 != retype_password:
+        flask.abort(400)
     pass
 
 
