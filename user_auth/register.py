@@ -2,6 +2,10 @@ import database
 import flask
 from _init_ import app
 import json
+import hashlib
+import users
+
+newUser = None
 
 @app.route("/users/register", methods=["GET", "POST"])
 def register():
@@ -22,6 +26,9 @@ def register():
         new_user_json = json.dumps(new_user)
         insert_into_db(new_user_json)
         flask.session['username'] = typed_user
+        newUser = users.userProfile(typed_name)
+        flask.session['user'] = newUser
+        flask.redirect("/users/login")
     else:
         context = {}
         flask.render_template("/users/register.html", **context)
@@ -42,6 +49,13 @@ def add_password():
     retype_password = flask.request.form['retype_password']
     if password_typed1 != retype_password:
         flask.abort(400)
+    elif password_typed1 is None or retype_password is None or (len(password_typed1) > 30 and len(password_typed1) < 5):
+        flask.abort(400)
+    return hash_password(password_typed1)
+
+
+
+def hash_password(password):
     pass
 
 
